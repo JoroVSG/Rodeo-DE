@@ -122,6 +122,8 @@ ipcMain.handle('logout', async (event) => {
     await logout();
 });
 
+ipcMain.handle('profile', (event) => profile);
+
 
 module.exports = {
   getAccessToken,

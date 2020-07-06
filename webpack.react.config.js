@@ -32,7 +32,7 @@ module.exports = {
     compress: true,
     hot: true,
     port: 4000,
-    publicPath: '/',
+    publicPath: '/'
   },
   output: {
     path: path.resolve(__dirname, '../dist/renderer'),
