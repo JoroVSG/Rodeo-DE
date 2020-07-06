@@ -27,8 +27,8 @@ const options = {
 module.exports = {
     init: () => {
         ipcMain.handle('loadSessions', async _ => {
-            const u = gallagherService.getIp();
-            const res = await axios(`http://${u}:15001/sessions`);
+            const url = gallagherService.getIp();
+            const res = await axios(`http://${url}:15001/sessions`);
             if(parser.validate(res.data) === true) {
                 const jsonObj = parser.parse(res.data, options);
                 return jsonObj;
@@ -37,8 +37,8 @@ module.exports = {
         });
 
         ipcMain.handle('loadSessionById', async (_, sessionId) => {
-            const u = gallagherService.getIp();
-            const res = await axios(`http://${u}:15001/sessions/${sessionId}`);
+            const url = gallagherService.getIp();
+            const res = await axios(`http://${url}:15001/sessions/${sessionId}`);
             if(parser.validate(res.data) === true) {
                 const jsonObj = parser.parse(res.data, options);
                 return jsonObj;

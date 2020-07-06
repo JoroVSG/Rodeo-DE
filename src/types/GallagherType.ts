@@ -18,7 +18,7 @@ export interface AdsDefaultTreatments {
 }
 
 export interface AdsAnimalId {
-    'ads:eid': string;
+    'ads:tag': string;
 }
 
 export interface AdsAnimal {

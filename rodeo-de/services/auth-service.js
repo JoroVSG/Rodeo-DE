@@ -36,7 +36,9 @@ function getAuthenticationURL() {
     clientId +
     "&" +
     "redirect_uri=" +
-    redirectUri
+    redirectUri +
+    "&" +
+    "audience=" + apiIdentifier 
   );
 }
 
@@ -123,6 +125,7 @@ ipcMain.handle('logout', async (event) => {
 });
 
 ipcMain.handle('profile', (event) => profile);
+ipcMain.handle('accessToken', (event) => accessToken);
 
 
 module.exports = {

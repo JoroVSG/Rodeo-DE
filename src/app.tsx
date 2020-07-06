@@ -13,22 +13,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     display: 'flex',
-//     '& > * + *': {
-//       marginLeft: theme.spacing(2),
-//     },
-//   },
-// }));
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,67 +55,80 @@ const App = () => {
     setSesstions(casted["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession[]);
   }
 
-  const onSessionClicked = async (e: React.ChangeEvent<{}>, session: AdsSession) => {
-    setFetching(true);
-    const res = await ipcRenderer.invoke('loadSessionById', session?.["ads:session_id"]);
-    setFetching(false);
-    const singleSessionResponse = res as SessionResponse;
-    const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"];
-    console.log(curSession);
-    
-    setCurrentSession(curSession as AdsSession);
+  const onSessionClicked = async (e: React.ChangeEvent<{}>, session: AdsSession, expanded: boolean) => {
+    if (!expanded) {
+      setFetching(true);
+      const res = await ipcRenderer.invoke('loadSessionById', session?.["ads:session_id"]);
+      setFetching(false);
+      const singleSessionResponse = res as SessionResponse;
+      const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"];
+      console.log(curSession);
+      
+      setCurrentSession(curSession as AdsSession);
+    }
+  }
+
+  const retrieveAccessToken = async () => {
+    const token = await ipcRenderer.invoke('accessToken');
+    console.log(token);
   }
   
   return (
     <>
       <Header />
       <Button color="primary" onClick={loadSessions}>Load Sessions</Button>
+      <Button color="primary" onClick={retrieveAccessToken}>Retrieve Access Token</Button>
+      <Button color="primary" onClick={() => {}}>Sync with Rodeo.bg</Button>
       {sessions && (
         <div className={classes.root}>
-          {sessions.map((session) => (
-            <Accordion key={session["ads:session_id"]} onClick={e => onSessionClicked(e, session)} expanded={session?.["ads:session_id"] === currentSession?.["ads:session_id"]}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography className={classes.heading}>{session["ads:name"]}</Typography>
-                <Typography className={classes.secondaryHeading}>{session["ads:startDate"]}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {fetching ? (
-                  <div className={classes.root}>
-                    <CircularProgress />
-                  </div>
-                ): (
-                  <TableContainer component={Paper}>
-                    <Table size="small" aria-label="a dense table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Animal ID</TableCell>
-                          <TableCell>Weight Date</TableCell>
-                          <TableCell>Weight</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {currentSession?.["ads:animals"]?.["ads:animal"]?.map((animal) => (
-                          <TableRow key={animal["ads:animalId"]?.["ads:eid"]}>
-                            <TableCell component="th" scope="row">
-                              {animal["ads:animalId"]?.["ads:eid"]}
-                            </TableCell>
-                            <TableCell>{animal["ads:datetime"]}</TableCell>
-                            <TableCell>{animal["ads:weight"]} kg</TableCell>
-                            
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )}
-                
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          {sessions.map((session) => {
+            const expanded = session?.["ads:session_id"] === currentSession?.["ads:session_id"];
+            return (
+              <Accordion key={session["ads:session_id"]} onClick={e => onSessionClicked(e, session, expanded)} expanded={expanded}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className={classes.heading}>{session["ads:name"]}</Typography>
+                  <Typography className={classes.secondaryHeading}>{session["ads:startDate"]}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {fetching ? (
+                    <div className={classes.root}>
+                      <CircularProgress />
+                    </div>
+                  ): (
+                    <>
+                      <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a dense table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Animal ID</TableCell>
+                              <TableCell>Weight Date</TableCell>
+                              <TableCell>Weight</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {!!currentSession?.["ads:animals"]?.["ads:animal"]?.map && currentSession?.["ads:animals"]?.["ads:animal"]?.map((animal, index) => (
+                              <TableRow key={animal["ads:animalId"]?.["ads:tag"] || index}>
+                                <TableCell component="th" scope="row">
+                                  {animal["ads:animalId"]?.["ads:tag"]}
+                                </TableCell>
+                                <TableCell>{animal["ads:datetime"]}</TableCell>
+                                <TableCell>{animal["ads:weight"]} kg</TableCell>
+                                
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            )
+          })}
         </div>
       )}
     </>
