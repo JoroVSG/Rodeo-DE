@@ -17,17 +17,31 @@ export interface AdsDefaultTreatments {
     'ads:defaultTreatment': AdsDefaultTreatment;
 }
 
+export interface AdsAnimalId {
+    'ads:eid': string;
+}
+
+export interface AdsAnimal {
+    'ads:animalId': AdsAnimalId;
+    'ads:weight': number;
+    'ads:datetime': Date;
+}
+
+export interface AdsAnimals {
+    'ads:animal': AdsAnimal[];
+}
+
 export interface AdsSession {
     'ads:session_id': string;
     'ads:name': string;
     'ads:startDate': Date;
     'ads:defaultTraits': AdsDefaultTraits;
-    'ads:animals': string;
+    'ads:animals': AdsAnimals;
     'ads:defaultTreatments': AdsDefaultTreatments;
 }
 
 export interface AdsSessions {
-    'ads:session': AdsSession[];
+    'ads:session': AdsSession[] | AdsSession;
 }
 
 export interface AdsBody {

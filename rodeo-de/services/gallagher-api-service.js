@@ -35,5 +35,15 @@ module.exports = {
             }
             return res.data;
         });
+
+        ipcMain.handle('loadSessionById', async (_, sessionId) => {
+            const u = gallagherService.getIp();
+            const res = await axios(`http://${u}:15001/sessions/${sessionId}`);
+            if(parser.validate(res.data) === true) {
+                const jsonObj = parser.parse(res.data, options);
+                return jsonObj;
+            }
+            return res.data;
+        });
     }
 }
