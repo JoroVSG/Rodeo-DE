@@ -1,5 +1,6 @@
 {
     "auth0Domain": "dev-ktt11zj0.eu.auth0.com",
     "clientId": "VW4Lal0kFyquInIZ80XbmmjUAOiu5oaL",
-    "apiIdentifier": "https://localhost:5001/graphql"
+    "apiIdentifier": "https://localhost:5001/graphql",
+    "rodeoServiceUrl": "https://www.rodeo.bg:2041/graphql"
 }

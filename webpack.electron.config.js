@@ -5,15 +5,22 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   devtool: 'source-map',
-  entry: ['babel-polyfill', './rodeo-de/main.ts'],
+  entry: ['babel-polyfill', './rodeo-de/main.js'],
   target: 'electron-main',
   module: {
     rules: [
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'babel-loader',
+      //   },
+      // },
       {
         test: /\.(js|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: 'awesome-typescript-loader',
         },
       },
       {

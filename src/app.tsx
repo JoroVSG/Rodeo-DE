@@ -62,15 +62,14 @@ const App = () => {
       setFetching(false);
       const singleSessionResponse = res as SessionResponse;
       const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"];
-      console.log(curSession);
       
       setCurrentSession(curSession as AdsSession);
     }
   }
 
   const retrieveAccessToken = async () => {
-    const token = await ipcRenderer.invoke('accessToken');
-    console.log(token);
+    const aniamls = await ipcRenderer.invoke('animalsQuery');
+    console.log(aniamls);
   }
   
   return (
@@ -91,7 +90,7 @@ const App = () => {
                   id="panel1a-header"
                 >
                   <Typography className={classes.heading}>{session["ads:name"]}</Typography>
-                  <Typography className={classes.secondaryHeading}>{session["ads:startDate"]}</Typography>
+                  <Typography className={classes.secondaryHeading}>{session["ads:startDate"]} - {session["ads:session_id"]}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   {fetching ? (
