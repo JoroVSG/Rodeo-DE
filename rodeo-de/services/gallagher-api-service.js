@@ -3,6 +3,7 @@ const axios = require("axios");
 const parser = require('fast-xml-parser');
 const he = require('he');
 const gallagherService = require('./gallagher-discovery-service');
+const gallagherDevicesService = require('./gallagher-discovery-devices');
 
 
 const options = {
@@ -45,5 +46,7 @@ module.exports = {
             }
             return res.data;
         });
+
+        ipcMain.handle('loadDevices', async _ => gallagherDevicesService.getDevices());
     }
 }

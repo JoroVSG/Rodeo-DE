@@ -4,12 +4,14 @@ const {createAuthWindow} = require('./auth-process');
 const createAppWindow = require('./app-process');
 const authService = require('./services/auth-service');
 const gallagherService = require('./services/gallagher-discovery-service');
+const gallagherDeviceService = require('./services/gallagher-discovery-devices');
 const gallagherApiService = require('./services/gallagher-api-service');
 const rodeoService = require('./services/rodeo-service');
 
 async function showWindow() {
   try {
-    gallagherService.listen();
+    //gallagherService.listen();
+    gallagherDeviceService.listen();
     gallagherApiService.init();
     rodeoService.initGraphQLClient();
     await authService.refreshTokens();

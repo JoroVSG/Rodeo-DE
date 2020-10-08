@@ -41,7 +41,7 @@ export default function ButtonAppBar() {
       show: false,
     });
   
-    logoutWindow.loadURL('https://dev-ktt11zj0.eu.auth0.com/v2/logout');
+    logoutWindow?.loadURL('https://dev-ktt11zj0.eu.auth0.com/v2/logout');
   
     logoutWindow.on('ready-to-show', async () => {
       logoutWindow.close();
