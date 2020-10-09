@@ -19,6 +19,12 @@ module.exports = {
         },
       },
       {
+        test: /\.(jpg|jpeg|png)$/,
+        use: {
+          loader: 'url-loader'
+        }
+      },
+      {
         test: /\.node$/,
         use: {
           loader: "file-loader"

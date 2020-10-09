@@ -25,6 +25,7 @@ import { Route, Switch } from 'react-router' // react-router v4/v5
 import { ConnectedRouter } from 'connected-react-router'
 import configureStore, { history } from './Redux/ConfigureStore';
 import Index from './Layout/Index';
+import Devices from './Components/Devices';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -162,7 +163,7 @@ const store = configureStore({});
 
 const Home = () => (
   <Index>
-    <h1>Hello</h1>
+    <Devices />
   </Index>
 )
 

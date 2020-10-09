@@ -19,7 +19,8 @@ const listen = () => {
         if (!devices.find(device => device.name === deviceName)) {
             devices.push({
                 name: deviceName,
-                ipAddress: info.address.replace('::ffff:', '')
+                ipAddress: info.address.replace('::ffff:', ''),
+                type: deviceName.includes(DEVICES_TYPE.TW3) ? DEVICES_TYPE.TW3 : DEVICES_TYPE.HR4
             });
         }
     });

@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
+    appBar: {
+      zIndex: theme.zIndex.drawer + 1,
+    },
     menuButton: {
       marginRight: theme.spacing(2),
     },
@@ -51,18 +54,16 @@ export default function ButtonAppBar() {
   }
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Rodeo Desktop Edition - {profile?.name}
-          </Typography>
-          <Button color="inherit" onClick={logout}>Logout</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar>
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          Rodeo Desktop Edition - {profile?.name}
+        </Typography>
+        <Button color="inherit" onClick={logout}>Logout</Button>
+      </Toolbar>
+    </AppBar>
   );
 }
