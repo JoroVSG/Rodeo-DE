@@ -9,6 +9,7 @@ export const history = createBrowserHistory();
 export type AppState = {
   device: DevicesType,
   allDevices: DevicesType[],
+  filteredDevices: DevicesType[],
   history: History
 } & any
 

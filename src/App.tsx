@@ -159,7 +159,7 @@ document.body.appendChild(mainElement);
 //   )
 // };
 
-const store = configureStore({});
+const store = configureStore({ });
 
 const Home = () => (
   <Index>

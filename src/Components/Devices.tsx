@@ -14,8 +14,10 @@ import {Divider, Grid} from '@material-ui/core';
 import TW3 from '../../images/tw3.jpg';
 import HR4 from '../../images/hr.jpg';
 import {useDispatch, useSelector} from 'react-redux';
-import { setSelectedDevice } from '../Redux/Actions';
+import {setAllDevices, setFilteredDevices, setSelectedDevice} from '../Redux/Actions';
 import {Sessions} from './Sessions';
+import DeviceSearch from './DeviceSearch';
+import {AppState} from '../Redux/ConfigureStore';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,12 +52,15 @@ const DEVICES_TYPE = {
 }
 
 export default () => {
-  const [devices, setDevices] = useState<DevicesType[]>([]);
-
+  // const [devices, setDevices] = useState<DevicesType[]>([]);
+  const filteredDevices = useSelector<AppState, DevicesType[]>(state => state.filteredDevices);
+  const dispatch = useDispatch();
   const loadDevices = async () => {
     const res = await ipcRenderer.invoke('loadDevices');
     console.log(res);
-    setDevices(res);
+    // setDevices(res);
+    dispatch(setAllDevices([...res]));
+    dispatch(setFilteredDevices([...res]));
   };
 
   useEffect(() => {
@@ -63,17 +68,18 @@ export default () => {
   }, []);
   
   const classes = useStyles();
-  const dispatch = useDispatch();
   
   return (
     <Grid container justify="center">
+      <Grid item sm={10}>
+        <DeviceSearch />
+      </Grid>
       <Grid item sm={10} className={classes.topRoot}>
         <Grid container className={classes.root} justify="flex-start" spacing={2}>
-          { devices.map(device => {
+          { filteredDevices.map(device => {
             return (
               <Grid item container sm={4}>
                 <Card className={classes.root} key={device.name} onClick={() => {
-                  debugger;
                   dispatch(setSelectedDevice(device));
                 }}>
                   <CardHeader/>
@@ -81,6 +87,7 @@ export default () => {
                   <CardContent>
                     <h2>{device.type === DEVICES_TYPE.TW3 ? 'Кантар' : 'Четец'}</h2>
                     <h1>{device.name}</h1>
+                    <h3>{(device.ipAddress)}</h3>
                     <p>Свързване с кантарно устройство</p>
                   </CardContent>
                   <CardActions disableSpacing>
@@ -92,7 +99,6 @@ export default () => {
                     </IconButton>
                   </CardActions>
                 </Card>
-                <h2>{device.ipAddress}</h2>
               </Grid>
             )
           })}
