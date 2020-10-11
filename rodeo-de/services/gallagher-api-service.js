@@ -27,9 +27,11 @@ const options = {
 
 module.exports = {
     init: () => {
-        ipcMain.handle('loadSessions', async _ => {
-            const url = gallagherService.getIp();
+        ipcMain.handle('loadSessions', async (_m, url) => {
+            // await axios(`http://${url}:15001/config/datatransfer?value=on`)
+            //gallagherDevicesService.client?.send("P", 15000, undefined)
             const res = await axios(`http://${url}:15001/sessions`);
+            //gallagherDevicesService.client?.send(new Buffer("P"), 15000, "255.255.255.0")
             if(parser.validate(res.data) === true) {
                 const jsonObj = parser.parse(res.data, options);
                 return jsonObj;

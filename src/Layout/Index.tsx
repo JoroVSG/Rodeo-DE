@@ -11,6 +11,9 @@ import {
   CssBaseline, Toolbar, Grid
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {ipcRenderer} from "electron";
+import {setSelectedDevice} from '../Redux/Actions';
+import {useDispatch} from 'react-redux';
 
 
 const drawerWidth = 240;
@@ -38,6 +41,13 @@ export default ({ children }) => {
     }),
   );
   
+  const dispatch = useDispatch();
+
+  const loadDevices = async () => {
+    const res = await ipcRenderer.invoke('loadDevices');
+    dispatch(setSelectedDevice(res))
+  };
+  
   const classes = useStyles()
   return (
     <div className={classes.root}>
@@ -57,7 +67,7 @@ export default ({ children }) => {
               <Toolbar />
               <List>
                 {['Устройства', 'Сесии', 'Експорт'].map((text, index) => (
-                  <ListItem button key={text}>
+                  <ListItem button key={text} onClick={loadDevices}>
                     <ListItemText primary={text} />
                   </ListItem>
                 ))}

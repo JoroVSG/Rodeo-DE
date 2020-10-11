@@ -1,18 +1,24 @@
 import { createBrowserHistory } from 'history'
-import { applyMiddleware, compose, createStore } from 'redux'
+import {Action, applyMiddleware, compose, createStore, Reducer, Store} from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createRootReducer from './Reducers';
+import {DevicesType} from '../Types/DevicesType';
 
-export const history = createBrowserHistory()
+export const history = createBrowserHistory();
 
-export default function configureStore(preloadedState: any) {
-  const store = createStore(
-    createRootReducer(history), // root reducer with router state
+export type AppState = {
+  device: DevicesType,
+  allDevices: DevicesType[],
+  history: History
+} & any
+
+export default function configureStore(preloadedState: any): Store<AppState> {
+  const store = createStore<AppState, Action, unknown, unknown>(
+    createRootReducer(history) as any,
     preloadedState,
     compose(
       applyMiddleware(
         routerMiddleware(history),
-        // ... other middlewares ...
       ),
     ),
   )

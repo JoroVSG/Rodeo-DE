@@ -3,6 +3,7 @@ const dgram = require('dgram');
 
 
 let devices = [];
+let client = null;
 
 const DEVICES_TYPE = {
     TW3: "TW3",
@@ -11,7 +12,7 @@ const DEVICES_TYPE = {
 
 const listen = () => {
     const PORT = 15000;
-    const client = dgram.createSocket('udp6');
+    client = dgram.createSocket('udp6');
     client.bind(PORT);
     client.on('error', err => console.log(err));
     client.on('message', async (message, info) => {
@@ -23,10 +24,26 @@ const listen = () => {
                 type: deviceName.includes(DEVICES_TYPE.TW3) ? DEVICES_TYPE.TW3 : DEVICES_TYPE.HR4
             });
         }
+        
+        if (deviceName?.toLocaleLowerCase() === "p") {
+            // const client1 = dgram.createSocket('udp6');
+            // client?.send(Buffer.from("p"), 15000, "255.255.255.255");
+            const buffer = Buffer.from('P');
+            client.send(buffer, PORT, undefined, (err) => {
+                if(err) {
+                    throw err
+                }
+                client.close();
+            });
+            //console.log("here")
+        }
+        console.log(deviceName)
+        
     });
 }
 
 module.exports = {
     listen,
-    getDevices: _ => devices
+    getDevices: _ => devices,
+    client
 }

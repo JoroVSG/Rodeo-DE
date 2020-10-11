@@ -1,0 +1,2 @@
+export const SET_SELECTED_DIVICE = "SET_SELECTED_DIVICE";
+export const SET_ALL_DIVICE = "SET_ALL_DIVICE";

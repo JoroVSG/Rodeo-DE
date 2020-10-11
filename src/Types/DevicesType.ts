@@ -1,5 +1,5 @@
 export interface DevicesType {
   name: string,
-  idAddress: string,
+  ipAddress: string,
   type: string
 }
