@@ -10,14 +10,17 @@ const DEVICES_TYPE = {
     HR4: "HR4"
 }
 
+const PING = "p";
+
 const listen = () => {
     const PORT = 15000;
     client = dgram.createSocket('udp6');
     client.bind(PORT);
     client.on('error', err => console.log(err));
     client.on('message', async (message, info) => {
+        devices = [];
         const deviceName = message.toString();
-        if (!devices.find(device => device.name === deviceName)) {
+        if (!devices.find(device => device.name === deviceName) && deviceName?.toLocaleLowerCase() !== PING) {
             devices.push({
                 name: deviceName,
                 ipAddress: info.address.replace('::ffff:', ''),
@@ -25,18 +28,17 @@ const listen = () => {
             });
         }
         
-        if (deviceName?.toLocaleLowerCase() === "p") {
-            // const client1 = dgram.createSocket('udp6');
-            // client?.send(Buffer.from("p"), 15000, "255.255.255.255");
-            const buffer = Buffer.from('P');
-            client.send(buffer, PORT, undefined, (err) => {
-                if(err) {
-                    throw err
-                }
-                client.close();
-            });
-            //console.log("here")
-        }
+        // if (deviceName?.toLocaleLowerCase() === PING) {
+        //     // const client1 = dgram.createSocket('udp6');
+        //     // client?.send(Buffer.from("p"), 15000, "255.255.255.255");
+        //     const buffer = Buffer.from('P');
+        //     client.send(buffer, PORT, undefined, (err) => {
+        //         if(err) {
+        //             throw err
+        //         }
+        //         //client.close();
+        //     });
+        // }
         console.log(deviceName)
         
     });

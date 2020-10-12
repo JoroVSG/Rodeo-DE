@@ -10,7 +10,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import { DevicesType } from '../Types/DevicesType';
 import { makeStyles } from '@material-ui/core/styles';
-import {Divider, Grid} from '@material-ui/core';
+import {CardActionArea, Divider, Grid} from '@material-ui/core';
 import TW3 from '../../images/tw3.jpg';
 import HR4 from '../../images/hr.jpg';
 import {useDispatch, useSelector} from 'react-redux';
@@ -79,25 +79,28 @@ export default () => {
           { filteredDevices.map(device => {
             return (
               <Grid item container sm={4}>
+                
                 <Card className={classes.root} key={device.name} onClick={() => {
                   dispatch(setSelectedDevice(device));
                 }}>
-                  <CardHeader/>
-                  <img className={classes.media} src={device.type === DEVICES_TYPE.TW3 ? TW3 : HR4} alt="" />
-                  <CardContent>
-                    <h2>{device.type === DEVICES_TYPE.TW3 ? 'Кантар' : 'Четец'}</h2>
-                    <h1>{device.name}</h1>
-                    <h3>{(device.ipAddress)}</h3>
-                    <p>Свързване с кантарно устройство</p>
-                  </CardContent>
-                  <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites" onClick={loadDevices}>
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                      <ShareIcon />
-                    </IconButton>
-                  </CardActions>
+                  <CardActionArea>
+                    <CardHeader/>
+                    <img className={classes.media} src={device.type === DEVICES_TYPE.TW3 ? TW3 : HR4} alt="" />
+                    <CardContent>
+                      <h2>{device.type === DEVICES_TYPE.TW3 ? 'Кантар' : 'Четец'}</h2>
+                      <h1>{device.name}</h1>
+                      <h3>{(device.ipAddress)}</h3>
+                      <p>Свързване с кантарно устройство</p>
+                    </CardContent>
+                    <CardActions disableSpacing>
+                      <IconButton aria-label="add to favorites" onClick={loadDevices}>
+                        <FavoriteIcon />
+                      </IconButton>
+                      <IconButton aria-label="share">
+                        <ShareIcon />
+                      </IconButton>
+                    </CardActions>
+                  </CardActionArea>
                 </Card>
               </Grid>
             )

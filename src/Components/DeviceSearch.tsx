@@ -4,7 +4,7 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppState} from '../Redux/ConfigureStore';
 import {TextField} from '@material-ui/core';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import {setAllDevices, setFilteredDevices} from '../Redux/Actions';
+import {setFilteredDevices} from '../Redux/Actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,7 +31,7 @@ export default () => {
   
   return (
     <div className={searchSessions}>
-      <h2>Устройства ({ filteredDev?.length })</h2>
+      <h3>Устройства ( {filteredDev?.length} )</h3>
       <TextField label="Търсене" onChange={filterAllDevices} />
     </div>
   )
