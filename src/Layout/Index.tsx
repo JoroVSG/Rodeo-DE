@@ -43,8 +43,12 @@ export default ({ children }) => {
   const dispatch = useDispatch();
 
   const loadDevices = async () => {
-    const res = await ipcRenderer.invoke('loadDevices');
-    dispatch(setSelectedDevice(res))
+    // const res = await ipcRenderer.invoke('loadDevices');
+    // dispatch(setSelectedDevice(res))
+    const token = await ipcRenderer.invoke('accessToken');
+    console.log(token);
+    const weightSessions = await ipcRenderer.invoke('weightSessions');
+    console.log(weightSessions)
   };
   
   const classes = useStyles()

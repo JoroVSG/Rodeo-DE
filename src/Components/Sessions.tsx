@@ -13,6 +13,8 @@ import {useSelector} from 'react-redux';
 import { AppState } from '../Redux/ConfigureStore';
 import { AdsSession, SessionResponse } from '../Types/GallagherType';
 import {Checkbox, Divider, TablePagination} from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     container: {
-      maxHeight: 440,
+      maxHeight: 700,
     },
   }),
 );
@@ -42,10 +44,15 @@ const SessionsPerDevice: FC = () => {
 
   const loadSessions = async (url: string) => {
     const res = await ipcRenderer.invoke('loadSessions', url);
+    const weightSessions = await ipcRenderer.invoke('weightSessions');
     const casted = res as SessionResponse;
     const sessions = casted["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession[];
-    debugger;
-    setSessions(sessions);
+    const mappedSessions = sessions?.map(session => {
+      const weightSession = weightSessions?.items?.find((ws: any) => ws.gallagherSessionID === session['ads:session_id']);
+      session['ads:sync'] = weightSession?.isSync || false;
+      return session;
+    });
+    setSessions(mappedSessions);
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -65,17 +72,9 @@ const SessionsPerDevice: FC = () => {
     {field: 'id', headerName: '', align: 'right'},
     {field: 'deviceName', headerName: 'Устройство', align: 'right'},
     {field: 'dateOfSession', headerName: 'Дата на сесия', align: 'right'},
-    {field: 'animalCount', headerName: 'Брой животни', align: 'right'},
-    {field: 'sync', headerName: 'Синхронизирана', align: 'right'}
+    {field: 'animalCount', headerName: 'Брой животни', align: 'center'},
+    {field: 'sync', headerName: 'Синхронизирана', align: 'center'}
   ];
-  
-  const rows = sessions.map(session => ({
-    deviceName: device?.name,
-    dateOfSession: new Date(session['ads:startDate'])?.toDateString(),
-    animalCount: session['ads:animals']['ads:animal']?.length,
-    sync: false
-    
-  }));
   
   return sessions.length > 0 ? (
     <div className={classes.sessions}>
@@ -91,7 +90,7 @@ const SessionsPerDevice: FC = () => {
                 {columns.map((column) => (
                   <TableCell
                     key={column.field}
-                    align='right'
+                    align='center'
                   >
                     {column.headerName}
                   </TableCell>
@@ -99,29 +98,15 @@ const SessionsPerDevice: FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {/*{rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {*/}
-              {/*  return (*/}
-              {/*    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>*/}
-              {/*      {columns.map((column) => {*/}
-              {/*        const value = row[column.field];*/}
-              {/*        return (*/}
-              {/*          <TableCell key={column.id} align={column.align}>*/}
-              {/*            {column.format && typeof value === 'number' ? column.format(value) : value}*/}
-              {/*          </TableCell>*/}
-              {/*        );*/}
-              {/*      })}*/}
-              {/*    </TableRow>*/}
-              {/*  );*/}
-              {/*})}*/}
               {sessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((session) => (
                 <TableRow key={session['ads:session_id']}>
                   <TableCell padding="checkbox">
                     <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />
                   </TableCell>
-                  <TableCell align="right">{device?.name}</TableCell>
-                  <TableCell align="right">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
-                  <TableCell align="right">{session['ads:animals']['ads:attributes']['ads:count']}</TableCell>
-                  <TableCell align="right">{false}</TableCell>
+                  <TableCell align="center">{device?.name}</TableCell>
+                  <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
+                  <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>
+                  <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon/> : <CancelIcon />}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -130,46 +115,13 @@ const SessionsPerDevice: FC = () => {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={rows.length}
+          count={sessions.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      {/*<TableContainer component={Paper}>*/}
-      {/*  <Table aria-label="simple table">*/}
-      {/*    <TableHead>*/}
-      {/*      <TableRow>*/}
-      {/*        <TableCell padding="checkbox">*/}
-      {/*          <Checkbox*/}
-      {/*            // indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-      {/*            // checked={rowCount > 0 && numSelected === rowCount}*/}
-      {/*            // onChange={onSelectAllClick}*/}
-      {/*            inputProps={{ 'aria-label': 'select all desserts' }}*/}
-      {/*          />*/}
-      {/*        </TableCell>*/}
-      {/*        <TableCell align="right">Устройство</TableCell>*/}
-      {/*        <TableCell align="right">Дата на сесия</TableCell>*/}
-      {/*        <TableCell align="right">Брой животни</TableCell>*/}
-      {/*        <TableCell align="right">Синхронизирана</TableCell>*/}
-      {/*      </TableRow>*/}
-      {/*    </TableHead>*/}
-      {/*    <TableBody>*/}
-      {/*      {sessions.map((session) => (*/}
-      {/*        <TableRow key={session['ads:session_id']}>*/}
-      {/*          <TableCell padding="checkbox">*/}
-      {/*            <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />*/}
-      {/*          </TableCell>*/}
-      {/*          <TableCell align="right">{device?.name}</TableCell>*/}
-      {/*          <TableCell align="right">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>*/}
-      {/*          <TableCell align="right">{session['ads:animals']['ads:animal']?.length}</TableCell>*/}
-      {/*          <TableCell align="right">{false}</TableCell>*/}
-      {/*        </TableRow>*/}
-      {/*      ))}*/}
-      {/*    </TableBody>*/}
-      {/*  </Table>*/}
-      {/*</TableContainer>*/}
     </div>
   ) : null
 };

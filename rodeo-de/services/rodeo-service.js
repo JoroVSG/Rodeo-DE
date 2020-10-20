@@ -5,13 +5,14 @@ const { rodeoServiceUrl } = require('../../env-variables.json');
 
 let graph = null;
 
-ipcMain.handle('animalsQuery', async () => {
+ipcMain.handle('weightSessions', async () => {
     return await graph(`
         query {
-            animals {
+            weightSessions{
             items {
-                animalId
-                name
+              gallagherSessionID
+              isSync
+              whenSync
             }
           }
         }
