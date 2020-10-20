@@ -15,31 +15,30 @@ import {ipcRenderer} from "electron";
 import {setSelectedDevice} from '../Redux/Actions';
 import {useDispatch} from 'react-redux';
 
-
 const drawerWidth = 240;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    drawerContainer: {
+      overflow: 'auto',
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+  }),
+);
 // @ts-ignore
 export default ({ children }) => {
-  const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-      root: {
-        flexGrow: 1
-      },
-      drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-      },
-      drawerPaper: {
-        width: drawerWidth,
-      },
-      drawerContainer: {
-        overflow: 'auto',
-      },
-      content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-      },
-    }),
-  );
   
   const dispatch = useDispatch();
 
@@ -82,7 +81,6 @@ export default ({ children }) => {
           </main>
         </Grid>
       </Grid>
-      
     </div>
   )
 }

@@ -15,7 +15,7 @@ export type AppState = {
 
 export default function configureStore(preloadedState: any): Store<AppState> {
   const store = createStore<AppState, Action, unknown, unknown>(
-    createRootReducer(history) as any,
+    createRootReducer(history) as AppState,
     preloadedState,
     compose(
       applyMiddleware(
