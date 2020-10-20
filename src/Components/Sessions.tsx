@@ -43,7 +43,9 @@ const SessionsPerDevice: FC = () => {
   const loadSessions = async (url: string) => {
     const res = await ipcRenderer.invoke('loadSessions', url);
     const casted = res as SessionResponse;
-    setSessions(casted["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession[]);
+    const sessions = casted["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession[];
+    debugger;
+    setSessions(sessions);
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -118,7 +120,7 @@ const SessionsPerDevice: FC = () => {
                   </TableCell>
                   <TableCell align="right">{device?.name}</TableCell>
                   <TableCell align="right">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
-                  <TableCell align="right">{session['ads:animals']['ads:animal']?.length}</TableCell>
+                  <TableCell align="right">{session['ads:animals']['ads:attributes']['ads:count']}</TableCell>
                   <TableCell align="right">{false}</TableCell>
                 </TableRow>
               ))}

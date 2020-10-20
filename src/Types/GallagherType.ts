@@ -27,8 +27,13 @@ export interface AdsAnimal {
     'ads:datetime': Date;
 }
 
+export interface AdsAttributes {
+    'ads:count': number
+}
+
 export interface AdsAnimals {
     'ads:animal': AdsAnimal[];
+    'ads:attributes': AdsAttributes
 }
 
 export interface AdsSession {
