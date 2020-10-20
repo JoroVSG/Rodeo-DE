@@ -43,6 +43,7 @@ export interface AdsSession {
     'ads:defaultTraits': AdsDefaultTraits;
     'ads:animals': AdsAnimals;
     'ads:defaultTreatments': AdsDefaultTreatments;
+    'ads:sync': boolean
 }
 
 export interface AdsSessions {
