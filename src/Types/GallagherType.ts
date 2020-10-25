@@ -21,10 +21,20 @@ export interface AdsAnimalId {
     'ads:tag': string;
 }
 
+export interface AdsAnimalWeightAttributes {
+    'ads:recorded': Date
+}
+
+export interface AdsAnimalWeight {
+    'ads:value': number,
+    'ads:attributes': AdsAnimalWeightAttributes
+}
+
 export interface AdsAnimal {
     'ads:animalId': AdsAnimalId;
-    'ads:weight': number;
+    'ads:weight': AdsAnimalWeight;
     'ads:datetime': Date;
+    rodeoAnimalId: number | undefined
 }
 
 export interface AdsAttributes {

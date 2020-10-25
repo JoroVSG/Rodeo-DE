@@ -2,14 +2,16 @@ import { createBrowserHistory } from 'history'
 import {Action, applyMiddleware, compose, createStore, Reducer, Store} from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createRootReducer from './Reducers';
-import {DevicesType} from '../Types/DevicesType';
+import {Animal, DevicesType} from '../Types/DevicesType';
 
 export const history = createBrowserHistory();
 
 export type AppState = {
   device: DevicesType,
   allDevices: DevicesType[],
+  allAnimals: Animal[],
   filteredDevices: DevicesType[],
+  loading: boolean,
   history: History
 } & any
 

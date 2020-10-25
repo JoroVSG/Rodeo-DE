@@ -25,10 +25,23 @@ ipcMain.handle('getAnimals', async () => {
           animals {
             items {
               lID
+              animalId
             }
           }
         }
     `)();
+});
+
+ipcMain.handle('syncSession', async (_, sessionInput) => {
+    console.log(sessionInput);
+    const sync = graph.mutate(`(@autodeclare) {
+      addSession(sessionInput: $input) { 
+       sessionID        
+      }
+    }`);
+    return await sync({
+        "input!sessionInput": sessionInput
+    })
 });
 
 

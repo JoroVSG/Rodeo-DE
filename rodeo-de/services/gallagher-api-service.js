@@ -9,7 +9,7 @@ const gallagherDevicesService = require('./gallagher-discovery-devices');
 const options = {
     attributeNamePrefix : "ads:",
     attrNodeName: "ads:attributes",
-    textNodeName : "#text",
+    textNodeName : "ads:value",
     ignoreAttributes : false,
     ignoreNameSpace : false,
     allowBooleanAttributes : false,
@@ -36,8 +36,7 @@ module.exports = {
             return res.data;
         });
 
-        ipcMain.handle('loadSessionById', async (_, sessionId) => {
-            const url = gallagherService.getIp();
+        ipcMain.handle('loadSessionById', async (_, { sessionId, url }) => {
             const res = await axios(`http://${url}:15001/sessions/${sessionId}`);
             if(parser.validate(res.data) === true) {
                 const jsonObj = parser.parse(res.data, options);

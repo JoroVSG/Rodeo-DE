@@ -7,12 +7,14 @@ import {
   ListItem,
   Theme,
   ListItemText,
-  CssBaseline, Toolbar, Grid
+  CssBaseline, Toolbar, Grid, CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {ipcRenderer} from "electron";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setAllAnimals} from '../Redux/Actions';
+import {green} from '@material-ui/core/colors';
+import {AppState} from '../Redux/ConfigureStore';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,6 +36,13 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    loader: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      marginTop: -12,
+      marginLeft: -12,
+    },
   }),
 );
 // @ts-ignore
@@ -54,7 +63,8 @@ export default ({ children }) => {
     console.log(token);
   };
   
-  const classes = useStyles()
+  const classes = useStyles();
+  const loading = useSelector<AppState, boolean>(state => state.loading);
   return (
     <div className={classes.root}>
       <Header />
@@ -84,6 +94,7 @@ export default ({ children }) => {
         <Grid sm={8}>
           <main className={classes.content}>
             <Toolbar />
+            {loading && <CircularProgress className={classes.loader} size={40} />}
             {children}
           </main>
         </Grid>

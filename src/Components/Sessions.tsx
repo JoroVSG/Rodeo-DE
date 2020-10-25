@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import { ipcRenderer } from 'electron';
+import {ipcRenderer} from 'electron';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,13 +8,17 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { DevicesType } from '../Types/DevicesType';
-import {useSelector} from 'react-redux';
+import {Animal, DevicesType} from '../Types/DevicesType';
+import {useDispatch, useSelector} from 'react-redux';
 import { AppState } from '../Redux/ConfigureStore';
-import { AdsSession, SessionResponse } from '../Types/GallagherType';
-import {Checkbox, Divider, TablePagination} from '@material-ui/core';
+import {AdsAnimal, AdsSession, SessionResponse} from '../Types/GallagherType';
+import {Checkbox, CircularProgress, Divider, IconButton, TablePagination} from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import SyncIcon from '@material-ui/icons/Sync';
+import {green} from '@material-ui/core/colors';
+import {setLoading} from '../Redux/Actions';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       maxHeight: 700,
-    },
+    }
   }),
 );
 
@@ -51,7 +55,8 @@ const SessionsPerDevice: FC = () => {
       const weightSession = weightSessions?.items?.find((ws: any) => ws.gallagherSessionID === session['ads:session_id']);
       return {
         ...session,
-        ['ads:sync']: weightSession?.isSync || false
+        //['ads:sync']: weightSession?.isSync || false
+        ['ads:sync']: !!weightSession
       };
     });
     setSessions(mappedSessions);
@@ -69,13 +74,54 @@ const SessionsPerDevice: FC = () => {
       loadSessions(device.ipAddress);  
     }
   }, [device]);
+  
+  const dispatch = useDispatch();
+  
+  const allAnimals = useSelector<AppState, Animal[]>(state => state.allAnimals);
+  
+  const onSessionClick = async (session: AdsSession) => {
+    dispatch(setLoading(true));
+    const res = await ipcRenderer.invoke("loadSessionById", 
+      { sessionId: session['ads:session_id'], url: device.ipAddress});
+    const singleSessionResponse = res as SessionResponse;
+    const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession;
+    const animalsFromSession = curSession['ads:animals']?.['ads:animal'];
+    const animalsToSend = animalsFromSession?.filter((animalFromSession: AdsAnimal) => {
+      const match = allAnimals.find(
+        a => a.lId?.toLocaleLowerCase() === animalFromSession?.['ads:animalId']?.['ads:tag']?.toLocaleLowerCase());
+      animalFromSession.rodeoAnimalId = match?.animalId;
+      return !!match;
+    });
+
+    const sessionInput = {
+      gallagherSessionID: session['ads:session_id'],
+      sessionName: session['ads:name'],
+      sessionDate: session['ads:startDate'],
+      animalWeights: animalsToSend?.map((a: AdsAnimal) => {
+        return {
+          weight: a['ads:weight']?.['ads:value'],
+          dateWeight: a['ads:datetime'],
+          animalID: a.rodeoAnimalId
+        };
+      }) || []
+    };
+    console.log(sessionInput);
+    const sync = await ipcRenderer.invoke("syncSession", sessionInput);
+    console.log(sync);
+
+    await loadSessions(device.ipAddress);
+
+    dispatch(setLoading(false));
+    
+  }
     
   const columns = [
     {field: 'id', headerName: '', align: 'right'},
     {field: 'deviceName', headerName: 'Устройство', align: 'right'},
     {field: 'dateOfSession', headerName: 'Дата на сесия', align: 'right'},
     {field: 'animalCount', headerName: 'Брой животни', align: 'center'},
-    {field: 'sync', headerName: 'Синхронизирана', align: 'center'}
+    {field: 'sync', headerName: 'Синхронизирана', align: 'center'},
+    {field: 'id', headerName: '', align: 'center'},
   ];
   
   return sessions.length > 0 ? (
@@ -101,15 +147,20 @@ const SessionsPerDevice: FC = () => {
             </TableHead>
             <TableBody>
               {sessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((session) => (
-                <TableRow key={session['ads:session_id']}>
-                  {/*<TableCell padding="checkbox">*/}
-                  {/*  <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />*/}
-                  {/*</TableCell>*/}
-                  <TableCell align="center">{session['ads:session_id']}</TableCell>
+                <TableRow title={session['ads:session_id']} key={session['ads:session_id']}>
+                  <TableCell padding="checkbox">
+                    <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />
+                  </TableCell>
+                  {/*<TableCell align="center">{session['ads:session_id']}</TableCell>*/}
                   <TableCell align="center">{device?.name}</TableCell>
                   <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
                   <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>
                   <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon/> : <CancelIcon />}</TableCell>
+                  <TableCell align="center">{!session['ads:sync'] && (
+                    <IconButton aria-label="sync" title="Синхронизирай с Родео" onClick={() => onSessionClick(session)}>
+                      <SyncIcon />
+                  </IconButton>)
+                  }</TableCell>
                 </TableRow>
               ))}
             </TableBody>

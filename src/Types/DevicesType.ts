@@ -5,5 +5,6 @@ export interface DevicesType {
 }
 
 export type Animal = {
-  lId: string
+  lId: string,
+  animalId: number
 }
