@@ -44,13 +44,15 @@ const SessionsPerDevice: FC = () => {
 
   const loadSessions = async (url: string) => {
     const res = await ipcRenderer.invoke('loadSessions', url);
-    const weightSessions = await ipcRenderer.invoke('weightSessions');
+    const { weightSessions } = await ipcRenderer.invoke('weightSessions');
     const casted = res as SessionResponse;
     const sessions = casted["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession[];
     const mappedSessions = sessions?.map(session => {
       const weightSession = weightSessions?.items?.find((ws: any) => ws.gallagherSessionID === session['ads:session_id']);
-      session['ads:sync'] = weightSession?.isSync || false;
-      return session;
+      return {
+        ...session,
+        ['ads:sync']: weightSession?.isSync || false
+      };
     });
     setSessions(mappedSessions);
   }
@@ -100,9 +102,10 @@ const SessionsPerDevice: FC = () => {
             <TableBody>
               {sessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((session) => (
                 <TableRow key={session['ads:session_id']}>
-                  <TableCell padding="checkbox">
-                    <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />
-                  </TableCell>
+                  {/*<TableCell padding="checkbox">*/}
+                  {/*  <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />*/}
+                  {/*</TableCell>*/}
+                  <TableCell align="center">{session['ads:session_id']}</TableCell>
                   <TableCell align="center">{device?.name}</TableCell>
                   <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
                   <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>

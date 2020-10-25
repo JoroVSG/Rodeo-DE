@@ -8,16 +8,29 @@ let graph = null;
 ipcMain.handle('weightSessions', async () => {
     return await graph(`
         query {
-            weightSessions{
+            weightSessions {
+                items {
+                  gallagherSessionID
+                  isSync
+                  whenSync
+                }
+            }
+        }
+    `)();
+});
+
+ipcMain.handle('getAnimals', async () => {
+    return await graph(`
+        query {
+          animals {
             items {
-              gallagherSessionID
-              isSync
-              whenSync
+              lID
             }
           }
         }
     `)();
 });
+
 
 module.exports = {
     initGraphQLClient: () => {

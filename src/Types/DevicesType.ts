@@ -3,3 +3,7 @@ export interface DevicesType {
   ipAddress: string,
   type: string
 }
+
+export type Animal = {
+  lId: string
+}

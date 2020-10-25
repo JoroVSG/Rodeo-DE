@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import {
   createStyles,
-  Divider,
   Drawer,
   List,
   ListItem,
@@ -12,8 +11,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {ipcRenderer} from "electron";
-import {setSelectedDevice} from '../Redux/Actions';
 import {useDispatch} from 'react-redux';
+import {setAllAnimals} from '../Redux/Actions';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,14 +40,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export default ({ children }) => {
   
   const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const getAllAnimals = async () => {
+      const { animals } = await ipcRenderer.invoke('getAnimals');
+      dispatch(setAllAnimals(animals.items));
+    };
+    getAllAnimals();
+  }, []);
 
   const loadDevices = async () => {
-    // const res = await ipcRenderer.invoke('loadDevices');
-    // dispatch(setSelectedDevice(res))
     const token = await ipcRenderer.invoke('accessToken');
     console.log(token);
-    const weightSessions = await ipcRenderer.invoke('weightSessions');
-    console.log(weightSessions)
   };
   
   const classes = useStyles()
