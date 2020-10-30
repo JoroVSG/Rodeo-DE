@@ -17,7 +17,7 @@ import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SyncIcon from '@material-ui/icons/Sync';
-import {green} from '@material-ui/core/colors';
+import { green, red } from '@material-ui/core/colors';
 import {setLoading} from '../Redux/Actions';
 
 
@@ -155,7 +155,7 @@ const SessionsPerDevice: FC = () => {
                   <TableCell align="center">{device?.name}</TableCell>
                   <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
                   <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>
-                  <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon/> : <CancelIcon />}</TableCell>
+                  <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon style={{ color: green[500] }}/> : <CancelIcon style={{ color: red[500] }} />}</TableCell>
                   <TableCell align="center">{!session['ads:sync'] && (
                     <IconButton aria-label="sync" title="Синхронизирай с Родео" onClick={() => onSessionClick(session)}>
                       <SyncIcon />
