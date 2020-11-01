@@ -121,7 +121,7 @@ const SessionsPerDevice: FC = () => {
     {field: 'dateOfSession', headerName: 'Дата на сесия', align: 'right'},
     {field: 'animalCount', headerName: 'Брой животни', align: 'center'},
     {field: 'sync', headerName: 'Синхронизирана', align: 'center'},
-    {field: 'id', headerName: '', align: 'center'},
+    {field: 'id1', headerName: '', align: 'center'},
   ];
   
   return sessions.length > 0 ? (
@@ -152,7 +152,7 @@ const SessionsPerDevice: FC = () => {
                     <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />
                   </TableCell>
                   {/*<TableCell align="center">{session['ads:session_id']}</TableCell>*/}
-                  <TableCell align="center">{device?.name}</TableCell>
+                  <TableCell align="center">{session['ads:name']}</TableCell>
                   <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
                   <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>
                   <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon style={{ color: green[500] }}/> : <CancelIcon style={{ color: red[500] }} />}</TableCell>
