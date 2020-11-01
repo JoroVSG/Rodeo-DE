@@ -19,6 +19,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import SyncIcon from '@material-ui/icons/Sync';
 import { green, red } from '@material-ui/core/colors';
 import {setLoading} from '../Redux/Actions';
+import { partition } from 'lodash';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,8 +56,7 @@ const SessionsPerDevice: FC = () => {
       const weightSession = weightSessions?.items?.find((ws: any) => ws.gallagherSessionID === session['ads:session_id']);
       return {
         ...session,
-        //['ads:sync']: weightSession?.isSync || false
-        ['ads:sync']: !!weightSession
+        ['ads:sync']: weightSession?.isSync || false
       };
     });
     setSessions(mappedSessions);
@@ -86,9 +86,9 @@ const SessionsPerDevice: FC = () => {
     const singleSessionResponse = res as SessionResponse;
     const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession;
     const animalsFromSession = curSession['ads:animals']?.['ads:animal'];
-    const animalsToSend = animalsFromSession?.filter((animalFromSession: AdsAnimal) => {
+    const [animalsToSend, nonExistingAnimals] = partition(animalsFromSession,(animalFromSession: AdsAnimal) => {
       const match = allAnimals.find(
-        a => a.lId?.toLocaleLowerCase() === animalFromSession?.['ads:animalId']?.['ads:tag']?.toLocaleLowerCase());
+        a => a.lID?.toLocaleLowerCase() === animalFromSession?.['ads:animalId']?.['ads:tag']?.toLocaleLowerCase());
       animalFromSession.rodeoAnimalId = match?.animalId;
       return !!match;
     });
@@ -105,10 +105,10 @@ const SessionsPerDevice: FC = () => {
         };
       }) || []
     };
-    console.log(sessionInput);
+    console.log(nonExistingAnimals);
     const sync = await ipcRenderer.invoke("syncSession", sessionInput);
     console.log(sync);
-
+    
     await loadSessions(device.ipAddress);
 
     dispatch(setLoading(false));

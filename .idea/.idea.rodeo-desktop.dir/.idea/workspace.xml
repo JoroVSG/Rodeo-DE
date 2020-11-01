@@ -36,16 +36,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2ee21fd9-2adf-49ea-afc8-03656d434273" name="Default Changelist" comment="Adding colors to the icons on session grid">
-      <change beforePath="$PROJECT_DIR$/env-variables.json" beforeDir="false" afterPath="$PROJECT_DIR$/env-variables.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.rodeo-desktop.dir/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.rodeo-desktop.dir/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.rodeo-desktop.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.rodeo-desktop.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Sessions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Sessions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Types/DevicesType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/Types/DevicesType.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -86,10 +92,8 @@
         <option value="$PROJECT_DIR$/src/Components/DeviceSearch.tsx" />
         <option value="$PROJECT_DIR$/rodeo-de/services/gallagher-discovery-devices.js" />
         <option value="$PROJECT_DIR$/rodeo-de/app-process.js" />
-        <option value="$PROJECT_DIR$/src/Types/DevicesType.ts" />
         <option value="$PROJECT_DIR$/rodeo-de/services/gallagher-api-service.js" />
         <option value="$PROJECT_DIR$/src/Types/GallagherType.ts" />
-        <option value="$PROJECT_DIR$/rodeo-de/services/rodeo-service.js" />
         <option value="$PROJECT_DIR$/src/Redux/ConfigureStore.tsx" />
         <option value="$PROJECT_DIR$/src/Redux/ReduxTypes.ts" />
         <option value="$PROJECT_DIR$/src/Redux/Actions.ts" />
@@ -98,8 +102,11 @@
         <option value="$PROJECT_DIR$/webpack.react.config.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/src/Components/Sessions.tsx" />
         <option value="$PROJECT_DIR$/env-variables.json" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/rodeo-de/services/rodeo-service.js" />
+        <option value="$PROJECT_DIR$/src/Types/DevicesType.ts" />
+        <option value="$PROJECT_DIR$/src/Components/Sessions.tsx" />
       </list>
     </option>
   </component>
@@ -174,7 +181,7 @@
       <workItem from="1604047329103" duration="436000" />
       <workItem from="1604049007375" duration="8990000" />
       <workItem from="1604061629033" duration="5782000" />
-      <workItem from="1604133374484" duration="610000" />
+      <workItem from="1604133374484" duration="3133000" />
     </task>
     <task id="LOCAL-00001" summary="Introducing redux, routing, devices-descovery">
       <created>1602172195250</created>
@@ -260,7 +267,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604044108154</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Migrating to react-react-app">
+      <created>1604215751257</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1604215751257</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -294,7 +308,8 @@
     <MESSAGE value="Adding all rodeo animals to the redux store" />
     <MESSAGE value="Adding sync session to rodeo" />
     <MESSAGE value="Adding colors to the icons on session grid" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding colors to the icons on session grid" />
+    <MESSAGE value="Migrating to react-react-app" />
+    <option name="LAST_COMMIT_MESSAGE" value="Migrating to react-react-app" />
   </component>
   <component name="WindowStateProjectService">
     <state x="200" y="23" key="#Inspection_severity" timestamp="1602736350835">
@@ -345,10 +360,11 @@
     <state width="1870" height="251" key="GridCell.Tab.0.right/0.23.1920.973@0.23.1920.973" timestamp="1604061489499" />
     <state width="1870" height="251" key="GridCell.Tab.0.right/0.23.1920.984@0.23.1920.984" timestamp="1604050388442" />
     <state width="1390" height="195" key="GridCell.Tab.0.right/0.23.1920.986@0.23.1920.986" timestamp="1604047167825" />
-    <state x="489" y="77" key="RollbackChangesDialog" timestamp="1603223506175">
-      <screen x="0" y="23" width="1440" height="808" />
+    <state x="489" y="78" key="RollbackChangesDialog" timestamp="1604215843755">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state x="489" y="77" key="RollbackChangesDialog/0.23.1440.808@0.23.1440.808" timestamp="1603223506175" />
+    <state x="489" y="78" key="RollbackChangesDialog/0.23.1440.821@0.23.1440.821" timestamp="1604215843755" />
     <state x="119" y="23" key="SettingsEditor" timestamp="1602736408205">
       <screen x="0" y="23" width="1440" height="825" />
     </state>
@@ -357,12 +373,12 @@
       <screen x="0" y="23" width="1920" height="984" />
     </state>
     <state x="534" y="161" key="VCS.ChangeListViewerDialog/0.23.1920.984@0.23.1920.984" timestamp="1604050138496" />
-    <state x="345" y="165" key="Vcs.Push.Dialog.v2" timestamp="1604044110075">
-      <screen x="0" y="23" width="1440" height="823" />
+    <state x="345" y="165" key="Vcs.Push.Dialog.v2" timestamp="1604215757282">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state x="345" y="156" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1602484225711" />
     <state x="345" y="163" key="Vcs.Push.Dialog.v2/0.23.1440.811@0.23.1440.811" timestamp="1603637368920" />
-    <state x="345" y="165" key="Vcs.Push.Dialog.v2/0.23.1440.821@0.23.1440.821" timestamp="1603663766621" />
+    <state x="345" y="165" key="Vcs.Push.Dialog.v2/0.23.1440.821@0.23.1440.821" timestamp="1604215757282" />
     <state x="345" y="165" key="Vcs.Push.Dialog.v2/0.23.1440.823@0.23.1440.823" timestamp="1604044110075" />
     <state x="345" y="166" key="Vcs.Push.Dialog.v2/0.23.1440.827@0.23.1440.827" timestamp="1603215536527" />
     <state x="460" y="193" key="Vcs.Push.Dialog.v2/0.23.1920.982@0.23.1920.982" timestamp="1602232764726" />
@@ -386,12 +402,12 @@
       <screen x="0" y="23" width="1920" height="991" />
     </state>
     <state x="540" y="230" key="run.anything.popup/0.23.1920.991@0.23.1920.991" timestamp="1604078581075" />
-    <state x="399" y="23" width="1120" height="1241" key="search.everywhere.popup" timestamp="1604078587523">
-      <screen x="0" y="23" width="1920" height="991" />
+    <state x="299" y="23" width="840" height="1027" key="search.everywhere.popup" timestamp="1604216745881">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state x="299" y="23" width="840" height="1018" key="search.everywhere.popup/0.23.1440.814@0.23.1440.814" timestamp="1603659160834" />
-    <state x="299" y="23" width="840" height="1020" key="search.everywhere.popup/0.23.1440.816@0.23.1440.816" timestamp="1603226154643" />
-    <state x="299" y="23" width="840" height="1027" key="search.everywhere.popup/0.23.1440.821@0.23.1440.821" timestamp="1603663402177" />
+    <state x="299" y="23" width="840" height="1020" key="search.everywhere.popup/0.23.1440.816@0.23.1440.816" timestamp="1604216209620" />
+    <state x="299" y="23" width="840" height="1027" key="search.everywhere.popup/0.23.1440.821@0.23.1440.821" timestamp="1604216745881" />
     <state x="299" y="23" width="840" height="1034" key="search.everywhere.popup/0.23.1440.828@0.23.1440.828" timestamp="1603213549437" />
     <state x="399" y="23" width="1120" height="1234" key="search.everywhere.popup/0.23.1920.986@0.23.1920.986" timestamp="1604064834329" />
     <state x="399" y="23" width="1120" height="1241" key="search.everywhere.popup/0.23.1920.991@0.23.1920.991" timestamp="1604078587523" />
