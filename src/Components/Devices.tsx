@@ -92,14 +92,8 @@ export default () => {
                       <h3>{(device.ipAddress)}</h3>
                       <p>Свързване с кантарно устройство</p>
                     </CardContent>
-                    <CardActions disableSpacing>
-                      <IconButton aria-label="add to favorites" onClick={loadDevices}>
-                        <FavoriteIcon />
-                      </IconButton>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
-                    </CardActions>
+                    
+                    
                   </CardActionArea>
                 </Card>
               </Grid>

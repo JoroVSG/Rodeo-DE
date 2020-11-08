@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState} from 'react';
 import {ipcRenderer} from 'electron';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import moment from 'moment'
+import {createStyles, makeStyles, Theme, WithStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,17 +13,39 @@ import {Animal, DevicesType} from '../Types/DevicesType';
 import {useDispatch, useSelector} from 'react-redux';
 import { AppState } from '../Redux/ConfigureStore';
 import {AdsAnimal, AdsSession, SessionResponse} from '../Types/GallagherType';
-import {Checkbox, CircularProgress, Divider, IconButton, TablePagination} from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Dialog,
+  DialogContent as MuiDialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  TablePagination, Typography
+} from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SyncIcon from '@material-ui/icons/Sync';
 import { green, red } from '@material-ui/core/colors';
 import {setLoading} from '../Redux/Actions';
 import { partition } from 'lodash';
+import { NonExistingAnimalsModal } from './NonExstingAnimalsModal';
 
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      margin: 0,
+      padding: theme.spacing(2),
+    },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
+  });
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(_ =>
   createStyles({
     sessions: {
       marginTop: 20,
@@ -38,12 +61,19 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+export interface DialogTitleProps extends WithStyles<typeof styles> {
+  id: string;
+  children: React.ReactNode;
+  onClose: () => void;
+}
 
 const SessionsPerDevice: FC = () => {
-  
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
   const [sessions, setSessions] = useState<AdsSession[]>([]);
+  const [session, setSession] = useState<AdsSession | null>(null);
   const [page, setPage] = useState<number>(0);
+  const [splitAnimals, setSplitAnimals] = useState<AdsAnimal[][]>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const device: DevicesType = useSelector<AppState, DevicesType>(state => state.device);
 
@@ -79,25 +109,43 @@ const SessionsPerDevice: FC = () => {
   
   const allAnimals = useSelector<AppState, Animal[]>(state => state.allAnimals);
   
-  const onSessionClick = async (session: AdsSession) => {
+  const onSessionClick = async (session: AdsSession | null, fromDialog: boolean = false) => {
     dispatch(setLoading(true));
     const res = await ipcRenderer.invoke("loadSessionById", 
-      { sessionId: session['ads:session_id'], url: device.ipAddress});
+      { sessionId: session?.['ads:session_id'], url: device.ipAddress});
     const singleSessionResponse = res as SessionResponse;
     const curSession = singleSessionResponse["ads:body"]?.["ads:sessions"]?.["ads:session"] as AdsSession;
     const animalsFromSession = curSession['ads:animals']?.['ads:animal'];
-    const [animalsToSend, nonExistingAnimals] = partition(animalsFromSession,(animalFromSession: AdsAnimal) => {
+    const calculateAnimals = partition(animalsFromSession,(animalFromSession: AdsAnimal) => {
       const match = allAnimals.find(
-        a => a.lID?.toLocaleLowerCase() === animalFromSession?.['ads:animalId']?.['ads:tag']?.toLocaleLowerCase());
+        a => a?.lID?.toLocaleLowerCase() === animalFromSession?.['ads:animalId']?.['ads:tag']?.toLocaleLowerCase());
       animalFromSession.rodeoAnimalId = match?.animalId;
       return !!match;
     });
-
+    
+    const [existingAnimals, nonExistingAnimals] = calculateAnimals;
+    
+    if (fromDialog) {
+      await syncSession(session, existingAnimals);
+      handleClose();
+    } else {
+      if (nonExistingAnimals.length > 0) {
+        setSplitAnimals(calculateAnimals);
+        setSession(curSession);
+        handleClickOpen();
+        dispatch(setLoading(false));
+      } else {
+        await syncSession(session, existingAnimals);
+      }
+    }
+  }
+  
+  const syncSession = async (session: AdsSession | null, existingAnimals: AdsAnimal[]) => {
     const sessionInput = {
-      gallagherSessionID: session['ads:session_id'],
-      sessionName: session['ads:name'],
-      sessionDate: session['ads:startDate'],
-      animalWeights: animalsToSend?.map((a: AdsAnimal) => {
+      gallagherSessionID: session?.['ads:session_id'],
+      sessionName: session?.['ads:name'],
+      sessionDate: session?.['ads:startDate'],
+      animalWeights: existingAnimals?.map((a: AdsAnimal) => {
         return {
           weight: a['ads:weight']?.['ads:value'],
           dateWeight: a['ads:datetime'],
@@ -105,25 +153,47 @@ const SessionsPerDevice: FC = () => {
         };
       }) || []
     };
-    console.log(nonExistingAnimals);
     const sync = await ipcRenderer.invoke("syncSession", sessionInput);
     console.log(sync);
-    
     await loadSessions(device.ipAddress);
-
-    dispatch(setLoading(false));
-    
   }
     
   const columns = [
-    {field: 'id', headerName: '', align: 'right'},
-    {field: 'deviceName', headerName: 'Устройство', align: 'right'},
-    {field: 'dateOfSession', headerName: 'Дата на сесия', align: 'right'},
+    {field: 'deviceName', headerName: 'Име', align: 'right'},
+    {field: 'dateOfSession', headerName: 'Дата', align: 'right'},
     {field: 'animalCount', headerName: 'Брой животни', align: 'center'},
     {field: 'sync', headerName: 'Синхронизирана', align: 'center'},
-    {field: 'id1', headerName: '', align: 'center'},
+    {field: 'id', headerName: '', align: 'center'},
   ];
-  
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography variant="h6">{children}</Typography>
+        {onClose ? (
+          <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  });
+  const DialogContent = withStyles((theme: Theme) => ({
+    root: {
+      padding: theme.spacing(2),
+    },
+  }))(MuiDialogContent);
+
   return sessions.length > 0 ? (
     <div className={classes.sessions}>
       <h2>Сесии</h2>
@@ -132,7 +202,7 @@ const SessionsPerDevice: FC = () => {
 
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" size="small">
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -148,12 +218,12 @@ const SessionsPerDevice: FC = () => {
             <TableBody>
               {sessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((session) => (
                 <TableRow title={session['ads:session_id']} key={session['ads:session_id']}>
-                  <TableCell padding="checkbox">
-                    <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />
-                  </TableCell>
+                  {/*<TableCell padding="checkbox">*/}
+                  {/*  <Checkbox inputProps={{ 'aria-label': 'select all desserts' }} />*/}
+                  {/*</TableCell>*/}
                   {/*<TableCell align="center">{session['ads:session_id']}</TableCell>*/}
                   <TableCell align="center">{session['ads:name']}</TableCell>
-                  <TableCell align="center">{new Date(session['ads:startDate'])?.toDateString()}</TableCell>
+                  <TableCell align="center">{moment(session?.['ads:startDate']).format('DD/MM/YYYY')}</TableCell>
                   <TableCell align="center">{session['ads:animals']?.['ads:attributes']?.['ads:count']}</TableCell>
                   <TableCell align="center">{session['ads:sync'] ? <CheckCircleIcon style={{ color: green[500] }}/> : <CancelIcon style={{ color: red[500] }} />}</TableCell>
                   <TableCell align="center">{!session['ads:sync'] && (
@@ -176,6 +246,29 @@ const SessionsPerDevice: FC = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Dialog
+        open={open}
+        fullWidth
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title" onClose={handleClose}>
+          Животни в сесия {session?.['ads:name']}
+          <br />
+          {moment(session?.['ads:startDate']).format('DD/MM/YYYY, h:mm:ss')}
+          <br />
+          Животни намерени ({splitAnimals[0]?.length})
+          {splitAnimals[0]?.length > 0 && (
+            <IconButton aria-label="sync" title="Синхронизирай с Родео" onClick={() => onSessionClick(session, true)}>
+              <SyncIcon />
+            </IconButton>
+          )}
+        </DialogTitle>
+        <DialogContent>
+          <NonExistingAnimalsModal splittedAnimals={splitAnimals} session={session} />
+        </DialogContent>
+      </Dialog>
+    
     </div>
   ) : null
 };

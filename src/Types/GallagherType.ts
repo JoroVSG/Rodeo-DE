@@ -19,6 +19,7 @@ export interface AdsDefaultTreatments {
 
 export interface AdsAnimalId {
     'ads:tag': string;
+    'ads:eid': string;
 }
 
 export interface AdsAnimalWeightAttributes {
@@ -30,10 +31,18 @@ export interface AdsAnimalWeight {
     'ads:attributes': AdsAnimalWeightAttributes
 }
 
+export type AdsNote = AdsAnimalWeight[] | AdsAnimalWeight
+
+export interface AdsNotes {
+    'ads:note': AdsNote
+}
+
 export interface AdsAnimal {
     'ads:animalId': AdsAnimalId;
     'ads:weight': AdsAnimalWeight;
     'ads:datetime': Date;
+    'ads:notes': AdsNotes;
+    'ads:treatments': AdsTreatments;
     rodeoAnimalId: number | undefined
 }
 
@@ -67,4 +76,8 @@ export interface AdsBody {
 
 export interface SessionResponse {
     'ads:body': AdsBody;
+}
+
+export interface AdsTreatments {
+    'ads:treatment': AdsDefaultTreatment
 }
