@@ -89,7 +89,7 @@
     "lodash": "^4.17.20",
     "material-ui-icons": "^1.0.0-beta.36",
     "mini-css-extract-plugin": "0.11.3",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "node-loader": "^1.0.0",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
